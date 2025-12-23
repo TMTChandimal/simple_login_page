@@ -1,17 +1,22 @@
+
 #login-container {
-    width: 500px;
-    margin: 0 auto;
+    justify-items: center;
+    width: 380px;
+    margin: auto;
     padding: 20px;
     color: rgb(255, 252, 252);
     border: 1px solid hsl(0, 19%, 23%);
     border-radius: 5px;
+    
     box-shadow: 0 0 10px 1px;
 }
+
+
+
 
 #login-container h1 {
     margin-bottom: 50px;
 }
-
 
 
 #login-container input {

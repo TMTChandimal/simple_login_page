@@ -1,12 +1,19 @@
-import { useState } from 'react'
-import './App.css'
+//import { useState } from 'react'
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import Register from './components/Register.jsx'
+import Dashboard from './components/Dashboard.jsx'
+import Login from './components/Login.jsx'
+
 
 function App() {
   return (
-    <div>
-      <h1>Simple Login App</h1>
-    </div>
+  <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<Login />}></Route>
+      <Route path='/register' element={<Register />}></Route>
+      <Route path='/dashboard' element={<Dashboard />}></Route>
+    </Routes>
+  </BrowserRouter>
   )
 }
-
 export default App
