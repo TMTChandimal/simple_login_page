@@ -18,7 +18,7 @@ const db = mysql.createConnection({
 });
 
 app.post('/register', (req, res) => {
-    const sql = "INSERT INTO test_login (username, email, password) VALUES (?, ?, ?)";
+    const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
     const pass = bcrypt.hashSync(req.body.password, 10);
     const values = [req.body.username, req.body.email, pass];
 
@@ -32,7 +32,7 @@ app.post('/register', (req, res) => {
 
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT password FROM test_login WHERE username = ?";
+    const sql = "SELECT password FROM users WHERE username = ?";
     const values = [req.body.username, req.body.password];
 
     db.query(sql, req.body.username, (err, result) => {
