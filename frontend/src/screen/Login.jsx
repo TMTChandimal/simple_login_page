@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./css/Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import ProtectedRoutes from "../utils/ProtectedRoutes.jsx";
-
 
 const Login = () => {
   const [Value, setValue] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
   const [Error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const HandleSubmit = (e) => {
     e.preventDefault();
@@ -22,23 +26,25 @@ const Login = () => {
       return;
     }
     setError("");
-    console.log("logining in");
-    axios.post("http://localhost:3001/login", {
-        email: Value.email,
-        password: Value.password,
-      })
-      .then((response) => {
-        console.log("Login successful:", response.data);
-        if (response.data === "Login successful") {
-          localStorage.setItem("authToken", "true");
+    
+    fetch('http://localhost:3001/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: Value.email, password: Value.password })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          console.log("Token received:", data.token);
+          localStorage.setItem('token', data.token);
           navigate("/dashboard", { replace: true });
         } else {
-          setError(response.data);
+          setError(data.message || "Login failed");
         }
       })
       .catch((error) => {
         console.error("Login failed:", error);
-        setError(error.response.data);
+        setError("An error occurred. Please try again.");
       });
   };
 
@@ -54,6 +60,7 @@ const Login = () => {
         type="text"
         name="email"
         placeholder="Email"
+        value={Value.email}
       />
 
       <br />
@@ -64,6 +71,7 @@ const Login = () => {
         type="password"
         name="password"
         placeholder="Password"
+        value={Value.password}
       />
 
       <br />
