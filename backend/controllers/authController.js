@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';
+import jwt from 'jsonwebtoken'; 
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const register = async (req, res) => {
   try {
@@ -24,7 +27,7 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json("email not found");
+      return res.status(401).json({ message: "User not found" });
     }
 
     const isMatch = bcrypt.compareSync(
@@ -33,11 +36,20 @@ export const login = async (req, res) => {
     );
 
     if (!isMatch) {
-      return res.status(401).json("Password is incorrect");
+      return res.status(401).json({ message: "Invalid password" });
     }
 
-    res.json("Login successful");
+    const payload = {
+      id: user.id,
+      username: user.username,
+      email: user.email
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token: token });
+
   } catch (error) {
-    res.status(500).json(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
